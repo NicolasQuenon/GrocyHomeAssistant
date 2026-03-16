@@ -1,0 +1,12 @@
+{
+  "name": "Grocy Latest Version",
+  "version": "1.0",
+  "slug": "grocy_latest_version",
+  "description": "Grocy auto-update (LinuxServer image)",
+  "startup": "services",
+  "boot": "auto",
+  "arch": ["aarch64", "amd64"],
+  "ports": {"9283/tcp": 9283},
+  "map": ["config:rw"],
+  "image": "lscr.io/linuxserver/grocy:latest"
+}
