@@ -6,26 +6,19 @@ url: "https://github.com/grocy/grocy"
 startup: services
 boot: auto
 init: false
-
 arch:
   - aarch64
   - amd64
   - armv7
   - i386
-
 ports:
   9283/tcp: 9283
-
 ports_description:
   9283/tcp: "Interface web Grocy"
-
 map:
   - data:rw
-
 webui: "http://[HOST]:9283"
-
 options:
   log_level: "info"
-
 schema:
   log_level: list(trace|debug|info|notice|warning|error|fatal)
