@@ -11,7 +11,7 @@ arch:
   - armv7
   - i386
 ports:
-  9283/tcp: 9283
+  9283/tcp: 80
 map:
   - addon_config:rw
 options: {}
