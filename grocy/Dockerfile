@@ -45,13 +45,20 @@ RUN mkdir -p /var/www/grocy \
     && rm /tmp/grocy.zip \
     && chown -R nginx:nginx /var/www/grocy
 
-# Configuration Nginx
+# Copie des fichiers de configuration
+COPY nginx.conf /etc/nginx/http.d/grocy.conf
+COPY run.sh /
+RUN chmod a+x /run.sh
+
+# Configuration Nginx et PHP-FPM
 RUN mkdir -p /run/nginx \
     && rm -f /etc/nginx/http.d/default.conf \
-    && echo 'server { \n\
-    listen 80 default_server; \n\
-    root /var/www/grocy/public; \n\
-    index index.php; \n\
-    client_max_body_size 100M; \n\
-    location / { \n\
-        try_files $uri /index.php$is
+    && sed -i 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' /etc/php83/php.ini \
+    && sed -i 's/listen = 127.0.0.1:9000/listen = 127.0.0.1:9000/g' /etc/php83/php-fpm.d/www.conf \
+    && sed -i 's/;clear_env = no/clear_env = no/g' /etc/php83/php-fpm.d/www.conf \
+    && sed -i 's/user = nobody/user = nginx/g' /etc/php83/php-fpm.d/www.conf \
+    && sed -i 's/group = nobody/group = nginx/g' /etc/php83/php-fpm.d/www.conf
+
+EXPOSE 80
+
+CMD ["/run.sh"]
