@@ -2,44 +2,49 @@ ARG BUILD_FROM=ghcr.io/home-assistant/aarch64-base:latest
 FROM ${BUILD_FROM}
 
 # Variables
-ENV GROCY_VERSION=4.6.0
+ENV GROCY_VERSION=4.2.0
 ENV LANG=C.UTF-8
 
-# Ajout des dépôts edge pour PHP 8.5
+# Ajout des dépôts edge
 RUN echo "https://dl-cdn.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories \
-    && echo "https://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
+    && echo "https://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories \
+    && echo "https://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
 
-# Installation des dépendances avec PHP 8.5
-RUN apk add --no-cache \
-    nginx \
-    php85 \
-    php85-fpm \
-    php85-pdo \
-    php85-pdo_sqlite \
-    php85-sqlite3 \
-    php85-gd \
-    php85-intl \
-    php85-mbstring \
-    php85-opcache \
-    php85-xml \
-    php85-curl \
-    php85-session \
-    php85-fileinfo \
-    php85-ctype \
-    php85-tokenizer \
-    php85-simplexml \
-    php85-dom \
-    php85-iconv \
-    php85-json \
-    php85-openssl \
-    php85-zip \
-    unzip \
-    wget \
-    ca-certificates
+# Mise à jour et vérification des versions PHP disponibles
+RUN apk update && apk search php8 | grep -E '^php8[0-9]+-[0-9]' | head -5
 
-# Créer des liens symboliques pour php
-RUN ln -sf /usr/bin/php85 /usr/bin/php \
-    && ln -sf /usr/sbin/php-fpm85 /usr/sbin/php-fpm
+# Détection de la dernière version PHP disponible
+RUN PHP_LATEST=$(apk search 'php8*-fpm' | grep -oE 'php8[0-9]+' | sort -V | tail -1) \
+    && echo "Version PHP détectée: ${PHP_LATEST}" \
+    && apk add --no-cache \
+        nginx \
+        ${PHP_LATEST} \
+        ${PHP_LATEST}-fpm \
+        ${PHP_LATEST}-pdo \
+        ${PHP_LATEST}-pdo_sqlite \
+        ${PHP_LATEST}-sqlite3 \
+        ${PHP_LATEST}-gd \
+        ${PHP_LATEST}-intl \
+        ${PHP_LATEST}-mbstring \
+        ${PHP_LATEST}-opcache \
+        ${PHP_LATEST}-xml \
+        ${PHP_LATEST}-curl \
+        ${PHP_LATEST}-session \
+        ${PHP_LATEST}-fileinfo \
+        ${PHP_LATEST}-ctype \
+        ${PHP_LATEST}-tokenizer \
+        ${PHP_LATEST}-simplexml \
+        ${PHP_LATEST}-dom \
+        ${PHP_LATEST}-iconv \
+        ${PHP_LATEST}-json \
+        ${PHP_LATEST}-openssl \
+        ${PHP_LATEST}-zip \
+        unzip \
+        wget \
+        ca-certificates \
+    && ln -sf /usr/bin/${PHP_LATEST} /usr/bin/php \
+    && ln -sf /usr/sbin/php-fpm* /usr/sbin/php-fpm \
+    && echo "${PHP_LATEST}" > /tmp/php_version.txt
 
 # Téléchargement et installation de Grocy
 RUN mkdir -p /var/www/grocy \
@@ -54,14 +59,15 @@ COPY nginx.conf /etc/nginx/http.d/grocy.conf
 COPY run.sh /
 RUN chmod a+x /run.sh
 
-# Configuration Nginx et PHP-FPM
+# Configuration Nginx et PHP-FPM (dynamique)
 RUN mkdir -p /run/nginx \
     && rm -f /etc/nginx/http.d/default.conf \
-    && sed -i 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' /etc/php85/php.ini \
-    && sed -i 's/listen = 127.0.0.1:9000/listen = 127.0.0.1:9000/g' /etc/php85/php-fpm.d/www.conf \
-    && sed -i 's/;clear_env = no/clear_env = no/g' /etc/php85/php-fpm.d/www.conf \
-    && sed -i 's/user = nobody/user = nginx/g' /etc/php85/php-fpm.d/www.conf \
-    && sed -i 's/group = nobody/group = nginx/g' /etc/php85/php-fpm.d/www.conf
+    && PHP_VER=$(cat /tmp/php_version.txt) \
+    && sed -i 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' /etc/${PHP_VER}/php.ini \
+    && sed -i 's/listen = 127.0.0.1:9000/listen = 127.0.0.1:9000/g' /etc/${PHP_VER}/php-fpm.d/www.conf \
+    && sed -i 's/;clear_env = no/clear_env = no/g' /etc/${PHP_VER}/php-fpm.d/www.conf \
+    && sed -i 's/user = nobody/user = nginx/g' /etc/${PHP_VER}/php-fpm.d/www.conf \
+    && sed -i 's/group = nobody/group = nginx/g' /etc/${PHP_VER}/php-fpm.d/www.conf
 
 EXPOSE 80
 
