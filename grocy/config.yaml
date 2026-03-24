@@ -1,5 +1,5 @@
 name: "Grocy (Latest)"
-version: "1.0.1"
+version: "1.0.2"
 slug: "grocy_latest"
 description: "Grocy avec image Docker à jour"
 startup: services
