@@ -13,7 +13,7 @@ arch:
   - i386
 
 ports:
-  9283/tcp: 80
+  9999/tcp: 80
 
 map:
   - addon_config:rw
