@@ -1,6 +1,6 @@
 #!/usr/bin/with-contenv bashio
 
-bashio::log.info "Démarrage de Grocy v4.6.0 avec PHP 8.5..."
+bashio::log.info "Démarrage Grocy 4.6.0..."
 
 DATA_DIR="/config/grocy"
 mkdir -p "${DATA_DIR}"
@@ -10,27 +10,21 @@ if [ ! -L "/var/www/grocy/data" ]; then
     ln -sf "${DATA_DIR}" /var/www/grocy/data
 fi
 
-# Configuration Grocy pour Ingress
 if [ ! -f "${DATA_DIR}/config.php" ]; then
-    bashio::log.info "Initialisation de la configuration Grocy..."
-    cp /var/www/grocy/config-dist.php "${DATA_DIR}/config.php"
-    
-    # Configuration pour Ingress
-    cat >> "${DATA_DIR}/config.php" << 'EOF'
-
-// Configuration Ingress Home Assistant
+    cat > "${DATA_DIR}/config.php" << 'EOF'
+<?php
 Setting('BASE_URL', '');
+Setting('BASE_PATH', '');
 Setting('SUB_DIR', '');
-Setting('DISABLE_AUTH', false);
+Setting('MODE', 'production');
 EOF
 fi
 
 chown -R nginx:nginx /var/www/grocy "${DATA_DIR}"
-mkdir -p /run/php
+mkdir -p /run/php /run/nginx
 
 php-fpm85 -D
 sleep 2
 
-bashio::log.info "Grocy disponible sur le port 9283"
-bashio::log.info "Ingress: Activez 'Afficher dans la barre latérale'"
+bashio::log.info "✅ Grocy prêt (port 80 Ingress, 9283 direct)"
 exec nginx -g 'daemon off;'
