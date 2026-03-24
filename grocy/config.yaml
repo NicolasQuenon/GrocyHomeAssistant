@@ -1,5 +1,5 @@
 name: "Grocy Latest"
-version: "4.2.1"
+version: "4.2.2"
 slug: "grocy_latest"
 description: "Grocy - Gestion de stock domestique (dernière version)"
 url: "https://github.com/grocy/grocy"
@@ -15,4 +15,4 @@ ports_description:
   80/tcp: "Interface web Grocy"
 map:
   - config:rw
-webui: "http://[HOST]:9283"
+webui: "http://[HOST]:[PORT:80]"
