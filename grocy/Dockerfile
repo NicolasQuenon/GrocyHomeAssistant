@@ -2,7 +2,7 @@ ARG BUILD_FROM=ghcr.io/home-assistant/aarch64-base:latest
 FROM ${BUILD_FROM}
 
 # Variables
-ENV GROCY_VERSION=4.2.0
+ENV GROCY_VERSION=4.6.0
 ENV LANG=C.UTF-8
 
 # Ajout des dépôts edge pour PHP 8.3
@@ -12,7 +12,6 @@ RUN echo "https://dl-cdn.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositor
 # Installation des dépendances
 RUN apk add --no-cache \
     nginx \
-    nginx-mod-http-headers-more \
     php83 \
     php83-fpm \
     php83-pdo \
