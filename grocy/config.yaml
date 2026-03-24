@@ -11,6 +11,6 @@ boot: auto
 init: false
 
 ingress: true
-ingress_port: 9283
+ingress_port: 80
 panel_icon: mdi:fridge-outline
 panel_title: Grocy
