@@ -1,6 +1,7 @@
 #!/usr/bin/with-contenv bashio
 
 bashio::log.info "Démarrage de Grocy v${GROCY_VERSION}..."
+bashio::log.info "PHP version: 8.5"
 
 # Répertoire de données persistantes
 DATA_DIR="/config/grocy"
@@ -27,8 +28,8 @@ chown -R nginx:nginx "${DATA_DIR}"
 mkdir -p /run/php
 
 # Démarrage PHP-FPM
-bashio::log.info "Démarrage de PHP-FPM 8.3..."
-php-fpm83 -D
+bashio::log.info "Démarrage de PHP-FPM 8.5..."
+php-fpm85 -D
 
 # Attendre que PHP-FPM soit prêt
 sleep 2
