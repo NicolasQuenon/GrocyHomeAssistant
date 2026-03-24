@@ -12,6 +12,7 @@ RUN echo "https://dl-cdn.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositor
 # Installation des dépendances
 RUN apk add --no-cache \
     nginx \
+    nginx-mod-http-headers-more \
     php83 \
     php83-fpm \
     php83-pdo \
