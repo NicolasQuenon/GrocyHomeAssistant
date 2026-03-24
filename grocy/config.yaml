@@ -1,5 +1,5 @@
 name: "Grocy Latest"
-version: "4.2.10"
+version: "4.2.11"
 slug: "grocy_latest"
 description: "Grocy - Gestion de stock domestique (dernière version)"
 url: "https://github.com/grocy/grocy"
@@ -9,12 +9,11 @@ arch:
 startup: services
 boot: auto
 init: false
-ingress: true
-ingress_port: 80
 panel_icon: mdi:fridge-outline
+panel_title: Grocy
 ports:
   80/tcp: 9283
 ports_description:
-  80/tcp: "Interface web Grocy (accès direct)"
+  80/tcp: "Interface web Grocy"
 map:
   - config:rw
