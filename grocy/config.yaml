@@ -1,24 +1,24 @@
-name: "Grocy (Latest)"
-version: "1.0.5"
+name: "Grocy Latest"
+version: "4.2.0"
 slug: "grocy_latest"
-description: "Grocy avec image Docker à jour"
+description: "Grocy - Gestion de stock domestique (dernière version)"
 url: "https://github.com/grocy/grocy"
-startup: services
-boot: auto
-init: false
 arch:
   - aarch64
   - amd64
   - armv7
-  - i386
+startup: services
+boot: auto
+init: false
+hassio_api: true
+homeassistant_api: false
 ports:
-  9283/tcp: 9283
+  80/tcp: 9283
 ports_description:
-  9283/tcp: "Interface web Grocy"
+  80/tcp: "Interface web Grocy"
 map:
-  - data:rw
+  - config:rw
+environment:
+  PUID: "0"
+  PGID: "0"
 webui: "http://[HOST]:9283"
-options:
-  log_level: "info"
-schema:
-  log_level: list(trace|debug|info|notice|warning|error|fatal)
