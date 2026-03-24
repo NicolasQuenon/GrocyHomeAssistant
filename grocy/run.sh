@@ -20,12 +20,18 @@ if [ ! -f "${DATA_DIR}/config.php" ]; then
 fi
 
 # Permissions
-chown -R www-data:www-data /var/www/grocy
-chown -R www-data:www-data "${DATA_DIR}"
+chown -R nginx:nginx /var/www/grocy
+chown -R nginx:nginx "${DATA_DIR}"
+
+# Création du répertoire pour PHP-FPM
+mkdir -p /run/php
 
 # Démarrage PHP-FPM
 bashio::log.info "Démarrage de PHP-FPM..."
-service php8.2-fpm start
+php-fpm82 -D
+
+# Attendre que PHP-FPM soit prêt
+sleep 2
 
 # Démarrage Nginx
 bashio::log.info "Démarrage de Nginx..."
