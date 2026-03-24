@@ -12,12 +12,21 @@ arch:
   - armv7
   - i386
 
-host_network: false
 ports:
-  9999/tcp: 80
+  9283/tcp: 9283
+
+ports_description:
+  9283/tcp: "Interface web Grocy"
 
 map:
   - addon_config:rw
 
-options: {}
-schema: {}
+options:
+  ssl: false
+  certfile: fullchain.pem
+  keyfile: privkey.pem
+
+schema:
+  ssl: bool
+  certfile: str
+  keyfile: str
