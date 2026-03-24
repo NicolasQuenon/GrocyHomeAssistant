@@ -1,7 +1,7 @@
 name: "Grocy"
-version: "4.6.0.5"
+version: "4.6.0.6"
 slug: "grocy_latest"
-description: "Grocy 4.6.0 avec PHP 8.5"
+description: "Grocy 4.6.0 avec PHP 8.5 et Ingress"
 url: "https://github.com/grocy/grocy"
 arch:
   - aarch64
@@ -10,9 +10,13 @@ startup: services
 boot: auto
 init: false
 hassio_api: true
+hassio_role: default
+ingress: true
+ingress_port: 80
 panel_icon: mdi:fridge-outline
 ports:
   80/tcp: 9283
+ports_description:
+  80/tcp: "Accès direct (optionnel)"
 map:
   - config:rw
-webui: "http://[HOST]:[PORT:80]"
