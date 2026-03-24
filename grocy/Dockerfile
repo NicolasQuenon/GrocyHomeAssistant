@@ -1,32 +1,41 @@
-ARG BUILD_FROM=ghcr.io/hassio-addons/debian-base:7.3.3
+ARG BUILD_FROM=ghcr.io/home-assistant/aarch64-base:latest
 FROM ${BUILD_FROM}
 
 # Variables
 ENV GROCY_VERSION=4.2.0
 ENV LANG=C.UTF-8
 
-# Installation des dépendances
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-        nginx \
-        php-fpm \
-        php-sqlite3 \
-        php-gd \
-        php-intl \
-        php-mbstring \
-        php-opcache \
-        php-xml \
-        php-curl \
-        unzip \
-        wget \
-        ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
+# Ajout des dépôts edge pour PHP 8.3
+RUN echo "https://dl-cdn.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories \
+    && echo "https://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
 
-# Détection de la version PHP installée
-RUN PHP_VERSION=$(php -r 'echo PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION;') \
-    && echo "PHP version: ${PHP_VERSION}" \
-    && ln -sf /etc/php/${PHP_VERSION}/fpm/php.ini /etc/php/fpm/php.ini \
-    && ln -sf /etc/php/${PHP_VERSION}/fpm/pool.d /etc/php/fpm/pool.d
+# Installation des dépendances
+RUN apk add --no-cache \
+    nginx \
+    php83 \
+    php83-fpm \
+    php83-pdo \
+    php83-pdo_sqlite \
+    php83-sqlite3 \
+    php83-gd \
+    php83-intl \
+    php83-mbstring \
+    php83-opcache \
+    php83-xml \
+    php83-curl \
+    php83-session \
+    php83-fileinfo \
+    php83-ctype \
+    php83-tokenizer \
+    php83-simplexml \
+    php83-dom \
+    unzip \
+    wget \
+    ca-certificates
+
+# Créer des liens symboliques pour php
+RUN ln -sf /usr/bin/php83 /usr/bin/php \
+    && ln -sf /usr/sbin/php-fpm83 /usr/sbin/php-fpm
 
 # Téléchargement et installation de Grocy
 RUN mkdir -p /var/www/grocy \
@@ -34,31 +43,15 @@ RUN mkdir -p /var/www/grocy \
         "https://github.com/grocy/grocy/releases/download/v${GROCY_VERSION}/grocy_${GROCY_VERSION}.zip" \
     && unzip -q /tmp/grocy.zip -d /var/www/grocy \
     && rm /tmp/grocy.zip \
-    && chown -R www-data:www-data /var/www/grocy
+    && chown -R nginx:nginx /var/www/grocy
 
 # Configuration Nginx
-RUN rm -f /etc/nginx/sites-enabled/default \
+RUN mkdir -p /run/nginx \
+    && rm -f /etc/nginx/http.d/default.conf \
     && echo 'server { \n\
     listen 80 default_server; \n\
     root /var/www/grocy/public; \n\
     index index.php; \n\
     client_max_body_size 100M; \n\
     location / { \n\
-        try_files $uri /index.php$is_args$args; \n\
-    } \n\
-    location ~ \.php$ { \n\
-        fastcgi_split_path_info ^(.+\.php)(/.+)$; \n\
-        fastcgi_pass unix:/run/php/php-fpm.sock; \n\
-        fastcgi_index index.php; \n\
-        include fastcgi_params; \n\
-        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name; \n\
-    } \n\
-}' > /etc/nginx/sites-enabled/grocy
-
-# Copie du script de démarrage
-COPY run.sh /
-RUN chmod a+x /run.sh
-
-EXPOSE 80
-
-CMD ["/run.sh"]
+        try_files $uri /index.php$is
