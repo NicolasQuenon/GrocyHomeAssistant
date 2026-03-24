@@ -29,6 +29,10 @@ RUN apk add --no-cache \
     php83-tokenizer \
     php83-simplexml \
     php83-dom \
+    php83-iconv \
+    php83-json \
+    php83-openssl \
+    php83-zip \
     unzip \
     wget \
     ca-certificates
