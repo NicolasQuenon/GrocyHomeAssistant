@@ -10,10 +10,10 @@ RUN echo "https://dl-cdn.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositor
 
 RUN apk add --no-cache \
     nginx php85 php85-fpm php85-pdo php85-pdo_sqlite php85-sqlite3 \
-    php85-gd php85-intl php85-mbstring php85-xml \
-    php85-curl php85-session php85-fileinfo php85-ctype php85-tokenizer \
-    php85-simplexml php85-dom php85-iconv php85-openssl \
-    php85-zip unzip wget ca-certificates
+    php85-gd php85-intl php85-mbstring php85-xml php85-curl \
+    php85-session php85-fileinfo php85-ctype php85-tokenizer \
+    php85-simplexml php85-dom php85-iconv php85-openssl php85-zip \
+    unzip wget ca-certificates
 
 RUN ln -sf /usr/bin/php85 /usr/bin/php \
     && ln -sf /usr/sbin/php-fpm85 /usr/sbin/php-fpm
