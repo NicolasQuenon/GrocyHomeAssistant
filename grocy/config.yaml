@@ -1,7 +1,7 @@
 name: "Grocy"
-version: "4.6.0.3"
+version: "4.6.0.4"
 slug: "grocy_latest"
-description: "Grocy - Gestion de stock domestique (dernière version)"
+description: "Grocy 4.6.0 avec PHP 8.5"
 url: "https://github.com/grocy/grocy"
 arch:
   - aarch64
@@ -13,8 +13,6 @@ hassio_api: true
 panel_icon: mdi:fridge-outline
 ports:
   80/tcp: 9283
-ports_description:
-  80/tcp: "Interface web Grocy"
 map:
   - config:rw
 webui: "http://[HOST]:[PORT:80]"
