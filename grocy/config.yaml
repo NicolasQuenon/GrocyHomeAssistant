@@ -1,7 +1,7 @@
-name: "Grocy Latest"
-version: "4.2.11"
+name: "Grocy"
+version: "4.6.0"
 slug: "grocy_latest"
-description: "Grocy - Gestion de stock domestique (dernière version)"
+description: "Grocy - Gestion de stock domestique"
 url: "https://github.com/grocy/grocy"
 arch:
   - aarch64
@@ -9,11 +9,13 @@ arch:
 startup: services
 boot: auto
 init: false
+hassio_api: true
+homeassistant_api: false
 panel_icon: mdi:fridge-outline
-panel_title: Grocy
 ports:
   80/tcp: 9283
 ports_description:
   80/tcp: "Interface web Grocy"
 map:
   - config:rw
+webui: "http://[HOST]:[PORT:80]"
