@@ -2,6 +2,10 @@
 
 bashio::log.info "Démarrage de Grocy v${GROCY_VERSION}..."
 
+# Détection de la version PHP
+PHP_VERSION=$(php -r 'echo PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION;')
+bashio::log.info "Version PHP détectée: ${PHP_VERSION}"
+
 # Répertoire de données persistantes
 DATA_DIR="/config/grocy"
 mkdir -p "${DATA_DIR}"
@@ -20,18 +24,33 @@ if [ ! -f "${DATA_DIR}/config.php" ]; then
 fi
 
 # Permissions
-chown -R nginx:nginx /var/www/grocy
-chown -R nginx:nginx "${DATA_DIR}"
+chown -R www-data:www-data /var/www/grocy
+chown -R www-data:www-data "${DATA_DIR}"
 
 # Création du répertoire pour PHP-FPM
 mkdir -p /run/php
 
+# Configuration PHP-FPM pour écouter sur un socket Unix
+PHP_FPM_CONF="/etc/php/${PHP_VERSION}/fpm/pool.d/www.conf"
+if [ -f "${PHP_FPM_CONF}" ]; then
+    sed -i 's/listen = .*/listen = \/run\/php\/php-fpm.sock/g' "${PHP_FPM_CONF}"
+    sed -i 's/;listen.owner = .*/listen.owner = www-data/g' "${PHP_FPM_CONF}"
+    sed -i 's/;listen.group = .*/listen.group = www-data/g' "${PHP_FPM_CONF}"
+    sed -i 's/;listen.mode = .*/listen.mode = 0660/g' "${PHP_FPM_CONF}"
+fi
+
 # Démarrage PHP-FPM
-bashio::log.info "Démarrage de PHP-FPM..."
-php-fpm82 -D
+bashio::log.info "Démarrage de PHP-FPM ${PHP_VERSION}..."
+service php${PHP_VERSION}-fpm start
 
 # Attendre que PHP-FPM soit prêt
-sleep 2
+sleep 3
+
+# Vérifier que le socket existe
+if [ ! -S /run/php/php-fpm.sock ]; then
+    bashio::log.error "Le socket PHP-FPM n'a pas été créé!"
+    exit 1
+fi
 
 # Démarrage Nginx
 bashio::log.info "Démarrage de Nginx..."
