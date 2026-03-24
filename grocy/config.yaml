@@ -16,3 +16,7 @@ map:
   - addon_config:rw
 options: {}
 schema: {}
+ingress: true
+ingress_port: 9283
+panel_title: Grocy
+panel_icon: mdi:fridge-outline
