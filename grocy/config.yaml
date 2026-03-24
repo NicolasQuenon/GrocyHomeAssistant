@@ -1,7 +1,8 @@
 name: "Grocy (Latest)"
-version: "1.0.4"
+version: "1.0.5"
 slug: "grocy_latest"
 description: "Grocy avec image Docker à jour"
+url: "https://github.com/grocy/grocy"
 startup: services
 boot: auto
 init: false
@@ -19,14 +20,12 @@ ports_description:
   9283/tcp: "Interface web Grocy"
 
 map:
-  - addon_config:rw
+  - data:rw
+
+webui: "http://[HOST]:9283"
 
 options:
-  ssl: false
-  certfile: fullchain.pem
-  keyfile: privkey.pem
+  log_level: "info"
 
 schema:
-  ssl: bool
-  certfile: str
-  keyfile: str
+  log_level: list(trace|debug|info|notice|warning|error|fatal)
