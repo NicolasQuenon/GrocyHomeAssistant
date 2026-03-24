@@ -5,41 +5,41 @@ FROM ${BUILD_FROM}
 ENV GROCY_VERSION=4.6.0
 ENV LANG=C.UTF-8
 
-# Ajout des dépôts edge pour PHP 8.3
+# Ajout des dépôts edge pour PHP 8.5
 RUN echo "https://dl-cdn.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories \
     && echo "https://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
 
-# Installation des dépendances
+# Installation des dépendances avec PHP 8.5
 RUN apk add --no-cache \
     nginx \
-    php83 \
-    php83-fpm \
-    php83-pdo \
-    php83-pdo_sqlite \
-    php83-sqlite3 \
-    php83-gd \
-    php83-intl \
-    php83-mbstring \
-    php83-opcache \
-    php83-xml \
-    php83-curl \
-    php83-session \
-    php83-fileinfo \
-    php83-ctype \
-    php83-tokenizer \
-    php83-simplexml \
-    php83-dom \
-    php83-iconv \
-    php83-json \
-    php83-openssl \
-    php83-zip \
+    php85 \
+    php85-fpm \
+    php85-pdo \
+    php85-pdo_sqlite \
+    php85-sqlite3 \
+    php85-gd \
+    php85-intl \
+    php85-mbstring \
+    php85-opcache \
+    php85-xml \
+    php85-curl \
+    php85-session \
+    php85-fileinfo \
+    php85-ctype \
+    php85-tokenizer \
+    php85-simplexml \
+    php85-dom \
+    php85-iconv \
+    php85-json \
+    php85-openssl \
+    php85-zip \
     unzip \
     wget \
     ca-certificates
 
 # Créer des liens symboliques pour php
-RUN ln -sf /usr/bin/php83 /usr/bin/php \
-    && ln -sf /usr/sbin/php-fpm83 /usr/sbin/php-fpm
+RUN ln -sf /usr/bin/php85 /usr/bin/php \
+    && ln -sf /usr/sbin/php-fpm85 /usr/sbin/php-fpm
 
 # Téléchargement et installation de Grocy
 RUN mkdir -p /var/www/grocy \
@@ -57,11 +57,11 @@ RUN chmod a+x /run.sh
 # Configuration Nginx et PHP-FPM
 RUN mkdir -p /run/nginx \
     && rm -f /etc/nginx/http.d/default.conf \
-    && sed -i 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' /etc/php83/php.ini \
-    && sed -i 's/listen = 127.0.0.1:9000/listen = 127.0.0.1:9000/g' /etc/php83/php-fpm.d/www.conf \
-    && sed -i 's/;clear_env = no/clear_env = no/g' /etc/php83/php-fpm.d/www.conf \
-    && sed -i 's/user = nobody/user = nginx/g' /etc/php83/php-fpm.d/www.conf \
-    && sed -i 's/group = nobody/group = nginx/g' /etc/php83/php-fpm.d/www.conf
+    && sed -i 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' /etc/php85/php.ini \
+    && sed -i 's/listen = 127.0.0.1:9000/listen = 127.0.0.1:9000/g' /etc/php85/php-fpm.d/www.conf \
+    && sed -i 's/;clear_env = no/clear_env = no/g' /etc/php85/php-fpm.d/www.conf \
+    && sed -i 's/user = nobody/user = nginx/g' /etc/php85/php-fpm.d/www.conf \
+    && sed -i 's/group = nobody/group = nginx/g' /etc/php85/php-fpm.d/www.conf
 
 EXPOSE 80
 
