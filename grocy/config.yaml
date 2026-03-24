@@ -1,7 +1,7 @@
 name: "Grocy"
-version: "4.6.0"
+version: "4.6.0.1"
 slug: "grocy_latest"
-description: "Grocy - Gestion de stock domestique"
+description: "Grocy - Gestion de stock domestique (dernière version)"
 url: "https://github.com/grocy/grocy"
 arch:
   - aarch64
@@ -10,7 +10,6 @@ startup: services
 boot: auto
 init: false
 hassio_api: true
-homeassistant_api: false
 panel_icon: mdi:fridge-outline
 ports:
   80/tcp: 9283
