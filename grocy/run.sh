@@ -15,17 +15,11 @@ bashio::log.info "Configuration sous-chemin /grocy/..."
 
 cat > "${DATA_DIR}/config.php" << 'EOF'
 <?php
-Setting('BASE_URL', 'https://bonapart.duckdns.org/grocy');
+Setting('BASE_URL', 'https://bonappart.duckdns.org/grocy');
 Setting('BASE_PATH', '');
 Setting('SUB_DIR', '');
 Setting('MODE', 'production');
 EOF
-
-# Modifier les fichiers Grocy pour supporter le sous-chemin
-# Patcher le fichier de configuration
-if [ -f "/var/www/grocy/app.php" ]; then
-    sed -i "s|define('GROCY_BASE_URL'.*|define('GROCY_BASE_URL', '/grocy');|" /var/www/grocy/app.php
-fi
 
 chown -R nginx:nginx /var/www/grocy "${DATA_DIR}"
 mkdir -p /run/php /run/nginx
