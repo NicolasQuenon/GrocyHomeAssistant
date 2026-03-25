@@ -1,7 +1,7 @@
 name: "Grocy"
 version: "4.6.0.11"
 slug: "grocy_latest"
-description: "Grocy 4.6.0 - ERP beyond your fridge"
+description: "Grocy 4.6.0 avec PHP 8.5"
 url: "https://github.com/grocy/grocy"
 arch:
   - aarch64
@@ -9,8 +9,10 @@ arch:
 startup: services
 boot: auto
 init: false
-webui: "http://[HOST]:[PORT:9283]"
+hassio_api: true
+panel_icon: mdi:fridge-outline
 ports:
-  9283/tcp: 9283
+  80/tcp: 9283
 map:
   - config:rw
+webui: "http://[HOST]:9283"
