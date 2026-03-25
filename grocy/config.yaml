@@ -1,7 +1,7 @@
 name: "Grocy"
-version: "4.6.0.10"
+version: "4.6.0.11"
 slug: "grocy_latest"
-description: "Grocy avec support Ingress"
+description: "Grocy 4.6.0 - ERP beyond your fridge"
 url: "https://github.com/grocy/grocy"
 arch:
   - aarch64
@@ -9,13 +9,8 @@ arch:
 startup: services
 boot: auto
 init: false
-hassio_api: true
-hassio_role: default
-auth_api: true
-ingress: true
-ingress_port: 80
-panel_icon: mdi:fridge-outline
+webui: "http://[HOST]:[PORT:9283]"
 ports:
-  80/tcp: 9283
+  9283/tcp: 9283
 map:
   - config:rw
