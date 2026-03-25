@@ -13,6 +13,7 @@ hassio_api: true
 panel_icon: mdi:fridge-outline
 ports:
   80/tcp: 9283
+ports_description:
+  80/tcp: "Interface web Grocy"
 map:
   - config:rw
-webui: "http://[HOST]:9283"
