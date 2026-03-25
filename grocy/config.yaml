@@ -1,5 +1,5 @@
 name: "Grocy"
-version: "4.6.0.7"
+version: "4.6.0.8"
 slug: "grocy_latest"
 description: "Grocy avec support Ingress"
 url: "https://github.com/grocy/grocy"
