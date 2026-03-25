@@ -10,40 +10,21 @@ if [ ! -L "/var/www/grocy/data" ]; then
     ln -sf "${DATA_DIR}" /var/www/grocy/data
 fi
 
-if [ ! -f "${DATA_DIR}/config.php" ]; then
-    cat > "${DATA_DIR}/config.php" << 'EOF'
+# Configuration pour sous-chemin /grocy/
+bashio::log.info "Configuration sous-chemin /grocy/..."
+
+cat > "${DATA_DIR}/config.php" << 'EOF'
 <?php
-Setting('BASE_URL', '');
+Setting('BASE_URL', 'https://bonapart.duckdns.org/grocy');
 Setting('BASE_PATH', '');
 Setting('SUB_DIR', '');
 Setting('MODE', 'production');
 EOF
-fi
 
-# Créer un fichier PHP pour forcer les cookies
-bashio::log.info "Configuration cookies SameSite=None..."
-
-cat > /var/www/grocy/public/cookie_fix.php << 'EOFPHP'
-<?php
-// Forcer les paramètres de cookies pour iframe
-session_set_cookie_params([
-    'lifetime' => 0,
-    'path' => '/',
-    'domain' => '',
-    'secure' => true,
-    'httponly' => true,
-    'samesite' => 'None'
-]);
-
-// Démarrer la session
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-EOFPHP
-
-# Modifier index.php pour inclure ce fichier
-if ! grep -q "cookie_fix.php" /var/www/grocy/public/index.php; then
-    sed -i '2i require_once __DIR__ . "/cookie_fix.php";' /var/www/grocy/public/index.php
+# Modifier les fichiers Grocy pour supporter le sous-chemin
+# Patcher le fichier de configuration
+if [ -f "/var/www/grocy/app.php" ]; then
+    sed -i "s|define('GROCY_BASE_URL'.*|define('GROCY_BASE_URL', '/grocy');|" /var/www/grocy/app.php
 fi
 
 chown -R nginx:nginx /var/www/grocy "${DATA_DIR}"
@@ -52,5 +33,5 @@ mkdir -p /run/php /run/nginx
 php-fpm85 -D
 sleep 2
 
-bashio::log.info "✅ Grocy prêt (cookies SameSite=None forcés)"
+bashio::log.info "✅ Grocy prêt (BASE_URL: /grocy)"
 exec nginx -g 'daemon off;'
